@@ -49,7 +49,7 @@ graphic_capita <- violence_capita %>%
 
 # Saves cleaned dataset to an RDS file for the Shiny App
 
-saveRDS(object = graphic_violence, file = "RDS/graphic_violence_capita.RDS")
+saveRDS(object = graphic_capita, file = "RDS/graphic_violence_capita.RDS")
 ```
 
 ```{r plotly code}
