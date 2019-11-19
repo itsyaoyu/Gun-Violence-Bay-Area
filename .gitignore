@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+*.Rproj
+*clean-data
+*graphics
+*the_trace_data
+*RDS
+*raw_data

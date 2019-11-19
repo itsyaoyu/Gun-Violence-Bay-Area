@@ -1,0 +1,91 @@
+---
+title: "Plotly"
+author: "Yao Yu"
+date: "11/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(janitor)
+library(plotly)
+library(tidyverse)
+```
+
+```{r accumulate by function}
+
+# This accumulate_by function can be found on the plotly documentation page for
+# making animated graphics and is used to calculate animated frames:
+# https://plot.ly/r/cumulative-animations/
+
+accumulate_by <- function(dat, var) {
+  var <- lazyeval::f_eval(var, dat)
+  lvls <- plotly:::getLevels(var)
+  dats <- lapply(seq_along(lvls), function(x) {
+    cbind(dat[var %in% lvls[seq(1, x)], ], frame = lvls[[x]])
+  })
+  dplyr::bind_rows(dats)
+}
+```
+
+```{r load in data}
+
+# Reads in csv and cleans names
+
+violence_capita <- read.csv("raw_data/violence_data_per_capita.csv") %>%
+  clean_names()
+
+# Cleans the data to fit the plotly and then cleans names again for the graphic
+
+graphic_capita <- violence_capita %>%
+  gather(key = "cities", value = "deaths", san_francisco_violent:st_louis_violent) %>%
+  mutate(cities = ifelse(cities == "san_francisco_violent", "San Francisco", cities),
+         cities = ifelse(cities == "oakland_violent", "Oakland", cities),
+         cities = ifelse(cities == "baltimore_violent", "Baltimore", cities),
+         cities = ifelse(cities == "chicago_violent", "Chicago", cities),
+         cities = ifelse(cities == "st_louis_violent", "St. Louis", cities)) %>%
+  accumulate_by(~year)
+
+# Saves cleaned dataset to an RDS file for the Shiny App
+
+saveRDS(object = graphic_violence, file = "RDS/graphic_violence_capita.RDS")
+```
+
+```{r plotly code}
+
+# Creating the animated graphic, this code will be copied to the Shiny App.
+# Tutorial can be found on the documentation page:
+# https://plot.ly/r/cumulative-animations/
+
+plot_ly(
+    data = graphic_capita,
+    x = ~year, 
+    y = ~deaths,
+    color = ~cities,
+    frame = ~frame,
+    text = ~cities, 
+    hoverinfo = "text",
+    type = 'scatter',
+    mode = 'lines'
+  ) %>% 
+  
+  # layout() is similar to labs() in ggplot to add title, axis-labels, caption (annotation)
+  
+  layout(
+    title = 'Number of Violent Crimes in Cities Per Year Per Capita',
+    xaxis = list(
+      title = "Year",
+      zeroline = F
+    ),
+    yaxis = list(
+      title = "Violent Crimes Per Capita",
+      zeroline = F
+    ),
+    annotations = list(x = 1, y = -0.12, text = "Source: Census.gov, fbi.gov", 
+      showarrow = F, xref='paper', yref='paper', 
+      xanchor='right', yanchor='auto', xshift=0, yshift=0,
+      font=list(size=15, color="black"))
+ )
+```
+

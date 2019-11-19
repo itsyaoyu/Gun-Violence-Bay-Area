@@ -1,0 +1,30 @@
+---
+title: "About"
+author: "Yao Yu"
+date: "11/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Background
+
+The goal of this project is to find what caused gun violence to decrease in the Bay Area while it was increasing in many other US cities for the past decade. Other analysts have suggested that this decline is related to criminal justice reforms, tough gun laws, and investment in local communities. We will be comparing how different cities in the United States interact with these factors using data from individual cities and comparing the differences in laws, demographics, and history.
+
+The plan for this project is to have different individuals work separately on analyzing gun violence in different cities across the United States. At the end of the individual research, we will all combine our findings together to compare what is and isn’t working in reducing gun violence rates across America. 
+
+For example, my area of focus is currently on San Francisco and the Bay Area rates. My friend, Erin Guetzloe, will be focusing on the gun violence rates in Boston. After we both finish our invidiual research and have our findings, we will meet together and look at our findings together in order to come up with potential solutions and failures.
+
+This collaborative project grew from the request of [David Hogg](https://en.wikipedia.org/wiki/David_Hogg_(activist)), Co-Founder of March For Our Lives and gun control advocate, to work with students of [David Kane's](davidkane.info/) Harvard Gov 1005 class. Hogg wanted to discover what specific factors had an effect in drastically decreasing the gun violence in the Bay Area and pinpoint specific examples of beneficial factors. One area of particular interest is in local initiatives that succeeded in the Bay Area. Any solid conclusions discovered at the end of this project will be used to try and lower gun violence in communities across the country.
+
+# The Data
+
+The visualizations from this project are based off of data from fbi.gov and Census.gov. There will be additional data from local governments to analyze specific changings in gun violence after changes are implemented (community action, laws, etc.).
+
+# About Me
+
+My name is Yao Yu and I'm currently an undergraduate at Harvard studying Data Science.
+
+Reach me at yaodongyu@college.harvard.edu or LinkedIn [here](https://www.linkedin.com/in/yaodong-yu)

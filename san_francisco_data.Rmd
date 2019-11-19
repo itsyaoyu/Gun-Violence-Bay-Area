@@ -1,0 +1,65 @@
+---
+title: "San Francisco Data"
+author: "Yao Yu"
+date: "11/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggmap)
+library(gganimate)
+library(ggthemes)
+library(tidyverse)
+```
+
+```{r SF data cleaning}
+
+# Read in the SF dataset downloaded from here:
+# https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-Historical-2003/tmnf-yvry
+SF_data <- read.csv("raw_data/SF_2003_2018.csv")
+
+# Filters out for Aggravated Assaults with a gun and then adds a year column
+
+data <- SF_data %>%
+  filter(Descript == "AGGRAVATED ASSAULT WITH A GUN") %>%
+  mutate(year = format(as.Date(data$Date, format="%M/%d/%Y"),"%Y"))
+
+# Writes out clean data to a new csv file
+
+write.csv(x = data, file = "clean-data/SF.csv")
+```
+
+```{r Graphing SF data}
+
+# Reads in clean csv data with a specification between 2011-2017 to stay
+# consistent with the violent crimes data
+
+trace_SF <- read.csv("clean-data/SF.csv") %>%
+  filter(year %in% c(2011, 2012, 2013, 2014, 2015, 2016, 2017))
+
+#Google api key (hidden for obvious reasons)
+
+ggmap::register_google(key = "***************************************")
+
+# Gets a google map image of San Francisco using Google Map's api
+
+p <- ggmap(get_googlemap(center = c(lon = -122.43, lat = 37.76),
+                    zoom = 12, scale = 2, size = c(640,640),
+                    maptype ='roadmap',
+                    color = 'color'))
+
+# Plots the crime points onto the map of Oakland saved to p
+
+graphic_SF_Google <- p + geom_point(aes(x = X, y = Y), data = trace_SF, size = 0.5) +
+  transition_manual(trace_SF$year) +
+  labs(title = "San Francisco, CA Aggravated Assault with Gun Data from 2011-2017",
+       subtitle = "Year: {current_frame}",
+       caption = "Source: The Trace") +
+  ggthemes::theme_map(base_size = 12)
+
+# Saves the animated graph into a gif
+
+anim_save(filename = "AAGun_SF.gif", animation = graphic_SF_Google, path = "graphics/")
+```
+
