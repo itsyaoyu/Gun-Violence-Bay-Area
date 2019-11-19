@@ -119,7 +119,7 @@ server <- function(input, output, session) {
     })
     output$violence_capita_Plotly <- renderPlotly({
         violence_capita <- plot_ly(
-            data = graphic_capita,
+            data = violence_capita,
             x = ~year, 
             y = ~deaths,
             color = ~cities,
