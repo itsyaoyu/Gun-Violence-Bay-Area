@@ -56,7 +56,7 @@ graphic_SF_Google <- p + geom_point(aes(x = X, y = Y), data = trace_SF, size = 0
   transition_manual(trace_SF$year) +
   labs(title = "San Francisco, CA Aggravated Assault with Gun Data from 2011-2017",
        subtitle = "Year: {current_frame}",
-       caption = "Source: The Trace") +
+       caption = "Source: City and County of San Francisco") +
   ggthemes::theme_map(base_size = 12)
 
 # Saves the animated graph into a gif

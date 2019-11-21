@@ -53,7 +53,8 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           p("The visualizations from this project are based off of data from 
                           fbi.gov and Census.gov. There will be additional data from local 
                           governments to analyze specific changings in gun violence after 
-                          changes are implemented (community action, laws, etc.)."),
+                          changes are implemented (community action, laws, etc.). More specific 
+                          details about the sources can be found under the Methods tab."),
                           h1("About Me"),
                           p("My name is Yao Yu and I’m currently an undergraduate at Harvard 
                           studying Data Science."),
@@ -91,8 +92,9 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
+                          fillRow(
                           imageOutput("SF"),
-                          imageOutput("OK")),
+                          imageOutput("OK"))),
                  tabPanel("Methods",
                           h1("Modeling"),
                           p("For my graphics, I chose to include three types: one showing the
@@ -142,9 +144,13 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                               href = "https://www.thetrace.org/violent-crime-data/"),
                             ", an organization dedicated to bring awareness to
                             gun violence. This dataset did have gun violence datapoints, which I
-                            used in my visualization. I chose not to use the San Francisco data from
-                            The Trace because it was extremely difficult to get the coordinates from
-                            the San Francisco dataset."))
+                            used in my visualization. I was able to gather the coordinates from street
+                            addresses after using a modified script I found",
+                            a("here",
+                              href = "http://www.storybench.org/geocode-csv-addresses-r/"),
+                            ", which once again used Google map's api. I chose not to use the 
+                            San Francisco data from The Trace because it was extremely difficult to get 
+                            the coordinates from the San Francisco dataset."))
 )
 
 # The code for this server was found here:
@@ -224,7 +230,7 @@ server <- function(input, output, session) {
             x = ~year, 
             y = ~numbers,
             color = ~variables,
-            text = ~year, 
+            text = ~numbers, 
             hoverinfo = "text",
             type = 'scatter',
             mode = 'line'

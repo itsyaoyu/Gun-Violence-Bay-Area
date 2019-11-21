@@ -8,11 +8,11 @@ library(ggmap)
 library(tidyverse)
 
 # Read in the CSV data and store it in a variable 
-origAddress <- read.csv("the_trace_data/San_Francisco_CA/SF_trace_cleaned.csv", stringsAsFactors = FALSE)
+origAddress <- read.csv("the_trace_data/Oakland_CA/OK_trace_cleaned.csv", stringsAsFactors = FALSE)
 
 # Add in oakland, ca or san francisco, ca to end of street addresses
 origAddress <- origAddress %>%
-  mutate(Location = sapply(origAddress$Address, function(x) paste(x, ', oakland, ca')))
+  mutate(Location = sapply(origAddress$Location..Address, function(x) paste(x, ', oakland, ca')))
 
 # Initialize the data frame
 geocoded <- data.frame(stringsAsFactors = FALSE)
@@ -32,4 +32,4 @@ for(i in 1:nrow(origAddress))
   origAddress$geoAddress[i] <- as.character(result[3])
 }
 # Write a CSV file containing origAddress to the working directory
-write.csv(origAddress, "clean-data/trace_SF.csv", row.names=FALSE)
+write.csv(origAddress, "clean-data/trace_OK.csv", row.names=FALSE)
