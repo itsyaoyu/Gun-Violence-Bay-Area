@@ -24,6 +24,9 @@ trace_OK <- read.csv("the_trace_data/Oakland_CA/PRR# 21044.csv")
 # number). Uses as.numeric to check if the first character is a number or not
 # and then drops all NAs (non numeric characters).
 
+# I used supressWarnings after finding this StackOverflow:
+# https://stackoverflow.com/questions/14984989/how-to-avoid-warning-when-introducing-nas-by-coercion
+
 trace_OK <- trace_OK %>%
   mutate(year = format(as.Date(trace_OK$Date, format="%d-%b-%Y"),"%Y")) %>%
   mutate(first_chr = substr(trace_OK$Location..Address, 1, 1)) %>%
@@ -72,7 +75,8 @@ p <- ggmap(get_googlemap(center = c(lon = -122.225, lat = 37.775),
                     maptype ='roadmap',
                     color = 'color'))
 
-# Plots the crime points onto the map of Oakland saved to p
+# Plots the crime points onto the map of Oakland saved to p, I used theme_map
+# after finding this: https://rdrr.io/cran/ggthemes/man/theme_map.html
 
 graphic_OK_Google <- p + geom_point(aes(x = lon, y = lat), data = trace_OK, size = 0.5) +
   transition_manual(trace_OK$year) +

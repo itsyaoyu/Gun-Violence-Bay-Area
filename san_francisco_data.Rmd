@@ -49,7 +49,8 @@ p <- ggmap(get_googlemap(center = c(lon = -122.43, lat = 37.76),
                     maptype ='roadmap',
                     color = 'color'))
 
-# Plots the crime points onto the map of Oakland saved to p
+# Plots the crime points onto the map of Oakland saved to p, I used the
+# theme_map after finding this: https://rdrr.io/cran/ggthemes/man/theme_map.html
 
 graphic_SF_Google <- p + geom_point(aes(x = X, y = Y), data = trace_SF, size = 0.5) +
   transition_manual(trace_SF$year) +

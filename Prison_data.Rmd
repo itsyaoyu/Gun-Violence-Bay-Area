@@ -1,0 +1,86 @@
+---
+title: "Prison Data"
+author: "Yao Yu"
+date: "11/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(readxl)
+library(fs)
+library(janitor)
+```
+
+```{r accumulate by function}
+
+# This accumulate_by function can be found on the plotly documentation page for
+# making animated graphics and is used to calculate animated frames:
+# https://plot.ly/r/cumulative-animations/
+
+accumulate_by <- function(dat, var) {
+  var <- lazyeval::f_eval(var, dat)
+  lvls <- plotly:::getLevels(var)
+  dats <- lapply(seq_along(lvls), function(x) {
+    cbind(dat[var %in% lvls[seq(1, x)], ], frame = lvls[[x]])
+  })
+  dplyr::bind_rows(dats)
+}
+```
+
+```{r Reading in data}
+
+# Creating a directory location to be used in map_dfr later
+
+# Got my data from the California Sentencing Institute:
+# http://casi.cjcj.org/about.html#download
+
+dir <- dir_ls("raw_data/prison_data/")
+
+# Read all data files into one big dataframe. Using real_excel because that
+# reads both xls and xlsx files.
+
+data <- map_dfr(dir, .id = "source", read_excel)
+
+# Pulls out total prison population and then selects the two California columns.
+
+x <- data %>% filter(Measures == "Total adult population in prison (number) as of December 31") %>% select(source, Measures, California, `California*`)
+
+# Creates a year column and then combines the two California columns.
+
+x <- x %>%
+  mutate(year = 2011:2016,
+         Imprisonment = ifelse(is.na(x$California), x$`California*`, x$California)) %>%
+  select(year, Imprisonment)
+```
+
+```{r Joining data}
+
+# Reading in violent crime data
+
+violence <- read.csv("raw_data/violence_data.csv") %>%
+  clean_names() %>%
+  select(year, san_francisco_violent, oakland_violent) %>%
+  filter(year %in% 2011:2016)
+
+# Merging datasets by year
+
+total_data <- merge(x, violence, by = "year")
+
+# Cleaning names and using gather to reformat the data for plotly
+
+data_final <- total_data %>%
+  gather(key = "variables", value = "numbers", Imprisonment:oakland_violent) %>%
+  mutate(variables = ifelse(variables == "san_francisco_violent", "San Francisco", variables),
+         variables = ifelse(variables == "oakland_violent", "Oakland", variables),
+         variables = ifelse(variables == "baltimore_violent", "Baltimore", variables),
+         variables = ifelse(variables == "chicago_violent", "Chicago", variables),
+         variables = ifelse(variables == "st_louis_violent", "St. Louis", variables)) %>%
+  accumulate_by(~year)
+
+# Saves data into RDS file.
+
+saveRDS(object = data_final, file = "RDS/imprisonment.RDS")
+```
+

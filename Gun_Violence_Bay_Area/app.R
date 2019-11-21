@@ -5,6 +5,8 @@ graphic_violence <- readRDS("graphic_violence.RDS")
 
 violence_capita <- readRDS("graphic_violence_capita.RDS")
 
+imprisonment_data <- readRDS("imprisonment.RDS")
+
 # Define UI for application 
 
 ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
@@ -79,9 +81,71 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
+                          h1("Work in Progress"),
+                          h2("Have to reset axes/autoscale after running grpah"),
+                          plotlyOutput("imprisonment_Plotly"),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
                           imageOutput("SF"),
                           imageOutput("OK")),
-                 tabPanel("Methods")
+                 tabPanel("Methods",
+                          h1("Modeling"),
+                          p("For my graphics, I chose to include three types: one showing the
+                            decrease in violent crimes in San Francisco and Oakland, California;
+                            one showing the trend between gun violence and imprisonment in
+                            California; and one showing all the datapoints of gun violence
+                            in both cities."),
+                          h2("Violent Crimes"),
+                          p("The violent crime graphics used data from the ",
+                            a("Data Commons Graph", 
+                              href = "https://browser.datacommons.org/gni"),                          
+                            ", a tool that combines data from various sources such as 
+                            Wikipedia, the US Census, NOAA, FBI, and etc. In my graph,
+                            I first look at violent crimes from 2011 to 2017. But, then I
+                            realized that Chicago's large crime rate made it difficult to
+                            see the other trends. So, I calculated the violent crime rates
+                            per capita to make these trends more visible."),
+                          h2("Violent Crimes and California Imprisonment"),
+                          p("Reading other reports on the low gun violence rates in
+                            California, there was a suggestion that this decrease related to
+                            a decrease in prison sentencing. While it was difficult to find
+                            sentencing rates specifically in San Francisco and Oakland, the
+                            overall imprisonment rates in California were available through
+                            the ",
+                            a("California Sentencing Institute", 
+                              href = "http://casi.cjcj.org/about.html#download"),
+                            ". What I found was a slight negative trend from 2011 to 2016,
+                            with the imprisonment rate following closely well to the Oakland
+                            gun violence rate. One problem with the imprisonment data is that
+                            most of San Francisco's imprisonment rates are not included because
+                            the California Sentencing Institute was unable to get the data from
+                            San Francisco."),
+                          h2("Gun Violence Datapoints"),
+                          p("The last type of graph shows the datapoints of each victim
+                            to gun violence in San Francisco and Oakland. First, I got the maps
+                            from ",
+                            a("Google Map's API",
+                            href = "https://cloud.google.com/maps-platform/"),
+                            ". The datapoints from San Francisco was pulled from",
+                            a("a crime dataset",
+                              href = "https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-Historical-2003/tmnf-yvry"),
+                            "with over 2 million rows of crime in San Francisco from 2003 to 2018. 
+                            I chose to pull out Aggravated Assault with a Gun data because there was
+                            no category just for violent crime or gun violence. The Oakland gun violence
+                            data came from",
+                            a("The Trace",
+                              href = "https://www.thetrace.org/violent-crime-data/"),
+                            ", an organization dedicated to bring awareness to
+                            gun violence. This dataset did have gun violence datapoints, which I
+                            used in my visualization. I chose not to use the San Francisco data from
+                            The Trace because it was extremely difficult to get the coordinates from
+                            the San Francisco dataset."))
 )
 
 # The code for this server was found here:
@@ -147,6 +211,36 @@ server <- function(input, output, session) {
                                    font=list(size=15, color="black"))
             )
     })
+    output$imprisonment_Plotly <- renderPlotly({
+        imprisonment_graphic <- plot_ly(
+            data = imprisonment_data,
+            x = ~year, 
+            y = ~numbers,
+            color = ~variables,
+            frame = ~frame,
+            text = ~variables, 
+            hoverinfo = "text",
+            type = 'scatter',
+            mode = 'lines'
+        ) %>% 
+            layout(
+                width = 1000, 
+                height = 500,
+                title = 'Violent Crimes vs. California Imprisonment',
+                xaxis = list(
+                    title = "Year",
+                    zeroline = F
+                ),
+                yaxis = list(
+                    title = "Violent Crimes and Imprisonment",
+                    zeroline = F
+                ),
+                annotations = list(x = 1, y = -0.12, text = "Source: Census.gov, fbi.gov, California Sentencing Institute", 
+                                   showarrow = F, xref='paper', yref='paper', 
+                                   xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                   font=list(size=12, color="black"))
+            )
+    })
     output$SF <- renderImage({
         # Return a list containing the filename
         list(src = "AAGun_SF.gif",
@@ -162,6 +256,7 @@ server <- function(input, output, session) {
              # width = 400,
              # height = 300,
              # alt = "This is alternate text"
-        )}, deleteFile = FALSE)}
+        )}, deleteFile = FALSE)
+    }
 
 shinyApp(ui, server)
