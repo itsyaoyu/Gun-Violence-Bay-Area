@@ -6,7 +6,13 @@ graphic_violence <- readRDS("graphic_violence.RDS")
 
 violence_capita <- readRDS("graphic_violence_capita.RDS")
 
-total_data <- readRDS("imprisonment.RDS")
+imprisonment_data <- readRDS("imprisonment.RDS")
+
+laws <- readRDS("laws.RDS")
+
+fit_SF <- lm(san_francisco_violent ~ year, data = laws)
+fit_OK <- lm(oakland_violent ~ year, data = laws)
+fit_Law <- lm(lawtotal ~ year, data = laws)
 
 # Define UI for application 
 
@@ -84,6 +90,15 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           plotlyOutput("imprisonment_Plotly"),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          plotlyOutput("laws_Plotly"),
                           br(),
                           br(),
                           br(),
@@ -216,15 +231,7 @@ server <- function(input, output, session) {
                                    font=list(size=15, color="black"))
             )
     })
-    output$imprisonment_Plotly <- renderPlotly({
-        
-        # Cleaning names and using gather to reformat the data for plotly
-        
-        imprisonment_data <- total_data %>%
-            gather(key = "variables", value = "numbers", Imprisonment:oakland_violent) %>%
-            mutate(variables = ifelse(variables == "san_francisco_violent", "San Francisco", variables),
-                   variables = ifelse(variables == "oakland_violent", "Oakland", variables))
-        
+    output$imprisonment_Plotly <- renderPlotly(
         imprisonment_graphic <- plot_ly(
             data = imprisonment_data,
             x = ~year, 
@@ -252,7 +259,46 @@ server <- function(input, output, session) {
                                    xanchor='right', yanchor='auto', xshift=0, yshift=0,
                                    font=list(size=12, color="black"))
             )
-    })
+    )
+    output$laws_Plotly <- renderPlotly(
+        laws_graphic <- plot_ly(data = laws, x = ~year, width = 1000, height = 500) %>%
+            add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
+            add_lines(x = ~year, y = fitted(fit_SF)) %>%
+            add_markers(y = ~oakland_violent, name = "Oakland", visible = F) %>%
+            add_lines(x = ~year, y = fitted(fit_OK), visible = F) %>%
+            add_markers(y = ~lawtotal, name = "Gun Control Laws", visible = F) %>%
+            add_lines(x = ~year, y = fitted(fit_Law), visible = F) %>%
+            layout(
+                showlegend = FALSE,
+                updatemenus = list(
+                    list(
+                        y = 0.6,
+                        x = -0.1,
+                        buttons = list(
+                            list(method = "restyle",
+                                 args = list("visible", list(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)),
+                                 label = "San Francisco"),
+                            list(method = "restyle",
+                                 args = list("visible", list(FALSE, FALSE, TRUE, TRUE, FALSE, FALSE)),
+                                 label = "Oakland"),
+                            list(method = "restyle",
+                                 args = list("visible", list(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE)),
+                                 label = "Gun Control Laws"))))) %>% 
+            layout(
+                title = 'Regression of Violent Crimes and Gun Control Laws',
+                xaxis = list(
+                    title = "Year",
+                    zeroline = F
+                ),
+                yaxis = list(
+                    title = "Violent Crimes and Gun Control Laws",
+                    zeroline = F
+                ),
+                annotations = list(x = 1, y = -0.08, text = "Source: Census.gov, fbi.gov, State Firearm Laws", 
+                                   showarrow = F, xref='paper', yref='paper', 
+                                   xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                   font=list(size=12, color="black"))
+            ))
     output$SF <- renderImage({
         # Return a list containing the filename
         list(src = "AAGun_SF.gif",

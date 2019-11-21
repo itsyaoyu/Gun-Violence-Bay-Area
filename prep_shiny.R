@@ -9,3 +9,5 @@ file_copy(path = "RDS/graphic_violence.RDS", new_path = "Gun_Violence_Bay_Area/g
 file_copy(path = "RDS/graphic_violence_capita.RDS", new_path = "Gun_Violence_Bay_Area/graphic_violence_capita.RDS", overwrite = TRUE)
 
 file_copy(path = "RDS/imprisonment.RDS", new_path = "Gun_Violence_Bay_Area/imprisonment.RDS", overwrite = TRUE)
+
+file_copy(path = "RDS/laws.RDS", new_path = "Gun_Violence_Bay_Area/laws.RDS", overwrite = TRUE)

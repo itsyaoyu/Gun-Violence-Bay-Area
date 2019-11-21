@@ -1,0 +1,91 @@
+---
+title: "Gun Laws"
+author: "Yao Yu"
+date: "11/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(plotly)
+```
+
+```{r Reading and cleaning data}
+
+# Taken from State Firearm Laws: http://www.statefirearmlaws.org/resources
+
+data <- read_excel("raw_data/DATABASE.and_.CODEBOOK.xlsx", sheet = 2)
+
+# Filters for california, total laws, and 2011 to 2017
+
+cali <- data %>% 
+  filter(state == "California") %>%
+  select(year, lawtotal) %>%
+  filter(year %in% 2011:2017)
+
+# Reading in violent crime data
+
+violence <- read.csv("raw_data/violence_data.csv") %>%
+  clean_names() %>%
+  select(year, san_francisco_violent, oakland_violent) %>%
+  filter(year %in% 2011:2016)
+
+# Merging datasets by year
+
+total_data <- merge(cali, violence, by = "year")
+
+# Saves data into RDS file.
+
+saveRDS(object = total_data, file = "RDS/laws.RDS")
+  
+```
+
+```{r}
+
+fit_SF <- lm(san_francisco_violent ~ year, data = laws)
+fit_OK <- lm(oakland_violent ~ year, data = laws)
+fit_Law <- lm(lawtotal ~ year, data = laws)
+
+plot_ly(data = laws, x = ~year) %>%
+  add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
+  add_lines(x = ~year, y = fitted(fit_SF)) %>%
+  add_markers(y = ~oakland_violent, name = "Oakland", visible = F) %>%
+  add_lines(x = ~year, y = fitted(fit_OK), visible = F) %>%
+  add_markers(y = ~lawtotal, name = "Gun Control Laws", visible = F) %>%
+  add_lines(x = ~year, y = fitted(fit_Law), visible = F) %>%
+  layout(
+    showlegend = FALSE,
+    updatemenus = list(
+      list(
+          buttons = list(
+          list(method = "restyle",
+               args = list("visible", list(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)),
+               label = "San Francisco"),
+          list(method = "restyle",
+               args = list("visible", list(FALSE, FALSE, TRUE, TRUE, FALSE, FALSE)),
+               label = "Oakland"),
+          list(method = "restyle",
+               args = list("visible", list(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE)),
+               label = "Gun Control Laws"))))) %>% 
+          layout(
+              width = 1000, 
+              height = 500,
+              title = 'Regression of Violent Crimes and Gun Control Laws',
+              xaxis = list(
+                  title = "Year",
+                  zeroline = F
+              ),
+              yaxis = list(
+                  title = "Violent Crimes and Gun Control Laws",
+                  zeroline = F
+              ),
+              annotations = list(x = 1, y = -0.08, text = "Source: Census.gov, fbi.gov, State Firearm Laws", 
+                                 showarrow = F, xref='paper', yref='paper', 
+                                 xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                 font=list(size=12, color="black"))
+            )
+```
+
