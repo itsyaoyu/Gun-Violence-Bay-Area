@@ -68,19 +68,8 @@ violence <- read.csv("raw_data/violence_data.csv") %>%
 
 total_data <- merge(x, violence, by = "year")
 
-# Cleaning names and using gather to reformat the data for plotly
-
-data_final <- total_data %>%
-  gather(key = "variables", value = "numbers", Imprisonment:oakland_violent) %>%
-  mutate(variables = ifelse(variables == "san_francisco_violent", "San Francisco", variables),
-         variables = ifelse(variables == "oakland_violent", "Oakland", variables),
-         variables = ifelse(variables == "baltimore_violent", "Baltimore", variables),
-         variables = ifelse(variables == "chicago_violent", "Chicago", variables),
-         variables = ifelse(variables == "st_louis_violent", "St. Louis", variables)) %>%
-  accumulate_by(~year)
-
 # Saves data into RDS file.
 
-saveRDS(object = data_final, file = "RDS/imprisonment.RDS")
+saveRDS(object = total_data, file = "RDS/imprisonment.RDS")
 ```
 

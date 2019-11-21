@@ -1,11 +1,12 @@
 library(shiny)
 library(plotly)
+library(tidyverse)
 
 graphic_violence <- readRDS("graphic_violence.RDS")
 
 violence_capita <- readRDS("graphic_violence_capita.RDS")
 
-imprisonment_data <- readRDS("imprisonment.RDS")
+total_data <- readRDS("imprisonment.RDS")
 
 # Define UI for application 
 
@@ -81,8 +82,6 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
-                          h1("Work in Progress"),
-                          h2("Have to reset axes/autoscale after running grpah"),
                           plotlyOutput("imprisonment_Plotly"),
                           br(),
                           br(),
@@ -212,16 +211,23 @@ server <- function(input, output, session) {
             )
     })
     output$imprisonment_Plotly <- renderPlotly({
+        
+        # Cleaning names and using gather to reformat the data for plotly
+        
+        imprisonment_data <- total_data %>%
+            gather(key = "variables", value = "numbers", Imprisonment:oakland_violent) %>%
+            mutate(variables = ifelse(variables == "san_francisco_violent", "San Francisco", variables),
+                   variables = ifelse(variables == "oakland_violent", "Oakland", variables))
+        
         imprisonment_graphic <- plot_ly(
             data = imprisonment_data,
             x = ~year, 
             y = ~numbers,
             color = ~variables,
-            frame = ~frame,
-            text = ~variables, 
+            text = ~year, 
             hoverinfo = "text",
             type = 'scatter',
-            mode = 'lines'
+            mode = 'line'
         ) %>% 
             layout(
                 width = 1000, 
@@ -235,7 +241,7 @@ server <- function(input, output, session) {
                     title = "Violent Crimes and Imprisonment",
                     zeroline = F
                 ),
-                annotations = list(x = 1, y = -0.12, text = "Source: Census.gov, fbi.gov, California Sentencing Institute", 
+                annotations = list(x = 1, y = -0.08, text = "Source: Census.gov, fbi.gov, California Sentencing Institute", 
                                    showarrow = F, xref='paper', yref='paper', 
                                    xanchor='right', yanchor='auto', xshift=0, yshift=0,
                                    font=list(size=12, color="black"))
