@@ -115,8 +115,9 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           p("For my graphics, I chose to include three types: one showing the
                             decrease in violent crimes in San Francisco and Oakland, California;
                             one showing the trend between gun violence and imprisonment in
-                            California; and one showing all the datapoints of gun violence
-                            in both cities."),
+                            California; one showing all the datapoints of gun violence
+                            in both cities; and one showing the Regression of violent crimes
+                            and gun control laws."),
                           h2("Violent Crimes"),
                           p("The violent crime graphics used data from the ",
                             a("Data Commons Graph", 
@@ -165,7 +166,25 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                               href = "http://www.storybench.org/geocode-csv-addresses-r/"),
                             ", which once again used Google map's api. I chose not to use the 
                             San Francisco data from The Trace because it was extremely difficult to get 
-                            the coordinates from the San Francisco dataset."))
+                            the coordinates from the San Francisco dataset."),
+                          h2("Regression"),
+                          p("The regression graphic shows the regression of three sets of data: the violent crime
+                            data from San Francisco, the violent crime data from Oakland, and the number of gun
+                            control laws in California. The violent crime data is the same that is shown in the
+                            first grpahic and the data on gun control laws is from ",
+                            a("State Firearm Laws",
+                              href = "http://www.statefirearmlaws.org/resources"),
+                            ". The regressions show that over the years of 2011 to 2017, the
+                            number of violent crimes in San Francisco has actually had a slight increase,
+                            the number of violent crimes in Oakland had a slight decrease, and the number
+                            of gun control laws in California steadily rose. However, the violent crime
+                            rates of both San Francisco and Oakland both started decreasing from 2013
+                            on and from 2012 to 2013, there was a slightly higher number of gun control
+                            laws passed, from 95 to 99. This suggests that one of those 4 new pieces of
+                            legislation might possibly have something to do with the decrease in gun
+                            violence in San Francisco and Oakland while it increased in many other US
+                            cities (as seen in the first two graphics)."
+                            ))
 )
 
 # The code for this server was found here:
@@ -181,11 +200,11 @@ server <- function(input, output, session) {
             text = ~cities, 
             hoverinfo = "text",
             type = 'scatter',
-            mode = 'lines'
+            mode = 'lines',
+            width = 1000, 
+            height = 500
         ) %>% 
             layout(
-                width = 1000, 
-                height = 500,
                 title = 'Number of Violent Crimes in Cities Per Year',
                 xaxis = list(
                     title = "Year",
@@ -211,11 +230,11 @@ server <- function(input, output, session) {
             text = ~cities, 
             hoverinfo = "text",
             type = 'scatter',
-            mode = 'lines'
+            mode = 'lines',
+            width = 1000, 
+            height = 500
         ) %>% 
             layout(
-                width = 1000, 
-                height = 500,
                 title = 'Number of Violent Crimes in Cities Per Year Per Capita',
                 xaxis = list(
                     title = "Year",
@@ -240,11 +259,11 @@ server <- function(input, output, session) {
             text = ~numbers, 
             hoverinfo = "text",
             type = 'scatter',
-            mode = 'line'
+            mode = 'line',
+            width = 1000, 
+            height = 500
         ) %>% 
             layout(
-                width = 1000, 
-                height = 500,
                 title = 'Violent Crimes vs. California Imprisonment',
                 xaxis = list(
                     title = "Year",
