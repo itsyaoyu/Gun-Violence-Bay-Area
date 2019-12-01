@@ -10,6 +10,8 @@ imprisonment_data <- readRDS("imprisonment.RDS")
 
 laws <- readRDS("laws.RDS")
 
+laws_analysis <- readRDS("laws_analysis.RDS")
+
 fit_SF <- lm(san_francisco_violent ~ year, data = laws)
 fit_OK <- lm(oakland_violent ~ year, data = laws)
 fit_Law <- lm(lawtotal ~ year, data = laws)
@@ -71,6 +73,7 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                             a("here",
                               href = "https://www.linkedin.com/in/yaodong-yu"))),
                  tabPanel("Models",
+                          h2("Violent Crimes"),
                           plotlyOutput("violence_Plotly"),
                           br(),
                           br(),
@@ -89,6 +92,7 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
+                          h2("Violent Crimes and California Imprisonment"),
                           plotlyOutput("imprisonment_Plotly"),
                           br(),
                           br(),
@@ -98,6 +102,7 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
+                          h2("Regression"),
                           plotlyOutput("laws_Plotly"),
                           br(),
                           br(),
@@ -107,6 +112,7 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                           br(),
                           br(),
                           br(),
+                          h2("Gun Violence Datapoints"),
                           fillRow(
                           imageOutput("SF"),
                           imageOutput("OK"))),
@@ -184,8 +190,69 @@ ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
                             legislation might possibly have something to do with the decrease in gun
                             violence in San Francisco and Oakland while it increased in many other US
                             cities (as seen in the first two graphics)."
-                            ))
-)
+                            )),
+                 tabPanel("Analysis",
+                          h1("Conclusions"),
+                          h2("Thought Process"),
+                          p("At the start of the whole project, I wanted to start by finding data to
+                            visualize and confirm that gun violence in San Francisco and Oakland. The
+                            closest data I could find at first was violent crime data, which I showed
+                            in my first two graphics under Violent Crimes. After that, I tried to find
+                            more data specifically relating to gun violence. As I mentioned before, ",
+                          a("The Trace",
+                            href = "https://www.thetrace.org/violent-crime-data/"),
+                          " had some very helpful datasets. However, these datasets were difficult to
+                          work with and in many cases just included too many variables that were not useful
+                          for my general graphic. I ended up using the Oakland data from The Trace and
+                          a big crime dataset with over 2 million rows from the City of San Francisco to
+                          plot datapoints with coordinates. I give a more in depth explanation about this 
+                          process in my Methods tab under Gun Violence Datapoints. Confirming that there
+                          was a decrease in gun violence in these two cities from 2013 to 2017, I went to
+                          dig deeper into why. I started by looking at criminal justice reforms to see
+                          if if there was any connection between that and the decrease in gun violence.
+                          What I found was inconclusive, because there is very limited data on imprisonment
+                          and most of the data I found did not include San Francisco. I still created a graph
+                          showing the trend in violent crimes and imprisonment rates, but since San Francisco
+                          data was missing, I decided not to pursue any further there. Instead, I moved onto
+                          gun control legislation and that is where things got interesting. Looking at the
+                          regression model I made showing violent crimes and gun control laws in California,
+                          there appeared to a jump in four new gun control laws passed from 2012 to 2013 - 
+                          exactly when violent crimes started decreasing in Oakland and San Francisco. Looking
+                          deeper into these four new laws, one had to do with ballistic fingerprinting 
+                          and microstamping, two had to do with gun storage and child access, and one had to
+                          do with removing guns from people with a domestic violence-related restraining order.
+                          Cross-referencing back to other states that have implemented these same laws (especially
+                          looking at the states of the cities that showed an increase in violent crimes in my first
+                          two graphs) I found that the first three laws were also shared in states with increasing
+                          gun violence and the only one that only California had was removing guns from people with 
+                          a domestic violence-related restraining order - identified as dvroremoval in the dataset."),
+                          h2("dvroremoval"),
+                          p("The first thing I did after realizing that this law was not as common in other states,
+                            I cleaned the data to create a graphic that would show which states did have this same law.
+                            The resulting graphic can be seen below. Massachusetts seemed to have adopted this piece of
+                            law back in 1994, long before California in 2013, Minnesota in 2014, and New Jersey in 2017.
+                            Looking at gun violence data in these other states, Erin Guetzloe's study on Boston, Massachusetts 
+                            saw an increase in gun violence. However, they adopted this law much earlier in the 90s, so it may
+                            be an outdated law or other factors are causing an increase. In Minneapolis, Minnesota there
+                            is limited data on gun violence and I suggest further research into gun violence there. For
+                            New Jersey, the law is too new which leads to limited data. It would wise to keep track of
+                            gun violence rates in cities like Newark, New Jersey in the next few years."),
+                          h2("Conclusion"),
+                          p("While my findings may be inconclusive, there is simply not enough data to determine if
+                            dvroremoval laws were the leading cause of San Francisco's and Oakland's decrease in gun
+                            violence from 2013 to 2017. Each of these four implementations of dvroremoval might also
+                            vary between each other, leading some to be more effective than others. It does appear
+                            that California's implementation is much more specific than others as seen in ",
+                            a("this",
+                              href = "https://lawcenter.giffords.org/gun-laws/policy-areas/who-can-have-a-gun/domestic-violence-firearms/"),
+                            " article by Giffords Law Center to Prevent Gun Violence. That being said, I strongly
+                              recommend keeping a tab on dvroremoval in the next few years and seeing its effects on
+                              gun violence in states that have implemented it. For further studies, I also recommend
+                              comparing how different states have implemented and are enforcing this piece of
+                              legislation. Contacting someone or an organization with more law background would be
+                              especially helpful in comparing these different implementations."),
+                          plotlyOutput("laws_analysis_Plotly")
+))
 
 # The code for this server was found here:
 # https://stackoverflow.com/questions/35421923/how-to-create-and-display-an-animated-gif-in-shiny
@@ -318,6 +385,23 @@ server <- function(input, output, session) {
                                    xanchor='right', yanchor='auto', xshift=0, yshift=0,
                                    font=list(size=12, color="black"))
             ))
+    output$laws_analysis_Plotly <- renderPlotly(
+        ggplotly(laws_analysis %>%
+                ggplot(aes(x = year, fill = state)) +
+                geom_bar() +
+                theme_classic() +
+                theme(axis.title.y = element_blank(),
+                      axis.text.y = element_blank(),
+                      axis.ticks.y = element_blank(),
+                      axis.line.y = element_blank()) +
+                labs(title = "States that have Adopted dvroremoval with Year",
+                     x = "Year",
+                     fill = "States"),
+                width = 1000, 
+                height = 500
+                
+        )
+    )
     output$SF <- renderImage({
         # Return a list containing the filename
         list(src = "AAGun_SF.gif",

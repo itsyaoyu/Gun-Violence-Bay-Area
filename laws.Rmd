@@ -89,3 +89,29 @@ plot_ly(data = laws, x = ~year) %>%
             )
 ```
 
+```{r Analysis}
+graph_data <- data %>% 
+  select(state, year, dvroremoval) %>% 
+  filter(dvroremoval == 1) %>%
+  mutate(state = ifelse(state == "New Jersey", "1 New Jersey", state)) %>%
+  mutate(state = ifelse(state == "Minnesota", "2 Minnesota", state)) %>%
+  mutate(state = ifelse(state == "California", "3 California", state)) %>%
+  mutate(state = ifelse(state == "Massachusetts", "4 Massachusetts", state))
+
+saveRDS(object = graph_data, file = "RDS/laws_analysis.RDS")
+
+graphic <- graph_data %>%
+  ggplot(aes(x = year, fill = state)) +
+  geom_bar() +
+  theme_classic() +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.line.y = element_blank()) +
+  labs(title = "States that have Adopted dvroremoval with Year",
+       x = "Year",
+       fill = "States")
+  
+ggplotly(graphic)
+```
+
