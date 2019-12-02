@@ -18,7 +18,7 @@ fit_Law <- lm(lawtotal ~ year, data = laws)
 
 # Define UI for application 
 
-ui <- navbarPage("Gun Violence Data in San Francisco and Oakland",
+ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                  tabPanel("About",
                           h1("Background"),
                           p("The goal of this project is to find what caused gun violence to 
