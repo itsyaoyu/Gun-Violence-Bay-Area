@@ -72,7 +72,7 @@ ui <- navbarPage(theme = shinytheme("united"),
                           h1("About Me"),
                           p("My name is Yao Yu and I’m currently an undergraduate at Harvard 
                           studying Government with a specialization in Data Science."),
-                          p("Reach me at ",
+                          p("You can reach me at ",
                             a("yaodongyu@college.harvard.edu",
                               href = "yaodongyu@college.harvard.edu",),
                             "or ",
@@ -86,17 +86,41 @@ ui <- navbarPage(theme = shinytheme("united"),
                           fixedRow(
                               column(4,
                                      p("In this graph,
-                            I first look at violent crimes from 2011 to 2017. But, then I
-                            realized that Chicago's large crime rate made it difficult to
-                            see the other trends.")),
+                            I started my research searching for statistics on the number of
+                            gun violence crimes in different cities across America. This data
+                            was much more difficult to find than I originally thought because
+                            I learned that different police departments across the country all
+                            code incident reports differently. Some, like San Francisco's PD,
+                            had specific coding down to the level of homicides with different
+                            types of weapons. Other cities, like Oakland, coded reports much more
+                            vaguely with just homicides or gun violence. Instead, I resorted to
+                            looking at violent crime data from the FBI because all cities were 
+                            required to report with similar coding. I found the ",
+                            a("Data Commons Graph", 
+                            href = "https://browser.datacommons.org/gni"),                          
+                            " tool useful for this because it could combine the FBI data from
+                            many different cities into one for graphing. I chose the cities of
+                            Baltimore, Chicago, and St. Louis to compare because they are also
+                            other large cities in the US that are being affected by gun violence.
+                            One problem with this data was that it does not go as far back in years
+                            as I would have liked. However, 2011 to 2017 is still a good representation
+                            to look at the decrease in gun violence in San Francisco and Oakland
+                            that this project is focused on.")),
                               column(5, 
                                      plotlyOutput("violence_Plotly", height = "100%"))
                           ),
                           br(),
                           fixedRow(
                               column(4,
-                                     p("To see the trends more clearly, 
-                                       I calculated the violent crime rates per capita.")),
+                                     p("After looking at the graph created from the gun
+                                     violence data, I realized that Chicago's high crime
+                                     rate made it difficult to see the trends of all the
+                                     cities. To clarify the trends, I took the crime rates
+                                     and used the per capita normalization function in the
+                                     ",
+                                     a("Data Commons Graph", 
+                                     href = "https://browser.datacommons.org/gni"),                          
+                                     " to show the number of violent crimes per capita.")),
                               column(5, 
                                      plotlyOutput("violence_capita_Plotly", height = "100%")))
                           ),
@@ -374,7 +398,7 @@ server <- function(input, output, session) {
             )
     )
     output$laws_Plotly <- renderPlotly(
-        laws_graphic <- plot_ly(data = laws, x = ~year, width = 950, height = 500) %>%
+        laws_graphic <- plot_ly(data = laws, x = ~year, width = 850, height = 500) %>%
             add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
             add_lines(x = ~year, y = fitted(fit_SF)) %>%
             add_markers(y = ~oakland_violent, name = "Oakland", visible = F) %>%
