@@ -42,7 +42,10 @@ ui <- navbarPage(theme = shinytheme("united"),
                           working in reducing gun violence rates across America."),
                           
                           p("For example, my area of focus is currently on San Francisco and the 
-                          Bay Area. My friend, Erin Guetzloe, will be focusing on 
+                          Bay Area. My friend, ",
+                          a("Erin Guetzloe",
+                          href = "https://eringuetzloe.shinyapps.io/gun-violence-visualizations/"),
+                          " will be focusing on 
                           gun violence rates in Boston. After we both finish our invidiual 
                           research and have our findings, we will meet together and look at 
                           our findings together in order to come up with potential solutions 
@@ -282,7 +285,10 @@ ui <- navbarPage(theme = shinytheme("united"),
                             I cleaned the data to create a graphic that would show which states did have this same law.
                             The resulting graphic can be seen below. Massachusetts seemed to have adopted this piece of
                             law back in 1994, long before California in 2013, Minnesota in 2014, and New Jersey in 2017.
-                            Looking at gun violence data in these other states, Erin Guetzloe's study on Boston, Massachusetts 
+                            Looking at gun violence data in these other states, ",
+                            a("Erin Guetzloe's",
+                              href = "https://eringuetzloe.shinyapps.io/gun-violence-visualizations/"),
+                            " study on Boston, Massachusetts 
                             saw an increase in gun violence. However, they adopted this law much earlier in the 90s, so it may
                             be an outdated law or other factors are causing an increase. In Minneapolis, Minnesota there
                             is limited data on gun violence and I suggest further research into gun violence there. For
