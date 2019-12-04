@@ -1,6 +1,7 @@
 library(shiny)
 library(plotly)
 library(tidyverse)
+library(shinythemes)
 
 graphic_violence <- readRDS("graphic_violence.RDS")
 
@@ -18,26 +19,30 @@ fit_Law <- lm(lawtotal ~ year, data = laws)
 
 # Define UI for application 
 
-ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
+ui <- navbarPage(theme = shinytheme("united"),
+                 "Gun Violence in San Francisco and Oakland",
                  tabPanel("About",
+                          column(7,
                           h1("Background"),
                           p("The goal of this project is to find what caused gun violence to 
                           decrease in the Bay Area while it was increasing in many other US 
-                          cities for the past decade. Other analysts have suggested that this 
+                          cities for the past decade. Other ",
+                          a("analysts",
+                            href = "https://www.theguardian.com/us-news/ng-interactive/2019/jun/03/gun-violence-bay-area-drop-30-percent-why-investigation"),
+                          "have suggested that this 
                           decline is related to criminal justice reforms, tough gun laws, and 
                           investment in local communities. We will be comparing how different 
                           cities in the United States interact with these factors using data 
-                          from individual cities and comparing the differences in laws, 
-                          demographics, and history."),
+                          from individual cities and comparing the differences."),
                           
                           p("The plan for this project is to have different individuals work 
                           separately on analyzing gun violence in different cities across 
                           the United States. At the end of the individual research, we will 
-                          all combine our findings together to compare what is and isn’t 
+                          combine our findings together to compare what is and isn’t 
                           working in reducing gun violence rates across America."),
                           
                           p("For example, my area of focus is currently on San Francisco and the 
-                          Bay Area rates. My friend, Erin Guetzloe, will be focusing on the 
+                          Bay Area. My friend, Erin Guetzloe, will be focusing on 
                           gun violence rates in Boston. After we both finish our invidiual 
                           research and have our findings, we will meet together and look at 
                           our findings together in order to come up with potential solutions 
@@ -58,64 +63,87 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                           the end of this project will be used to try and lower gun violence 
                           in communities across the country."),
                           h1("The Data"),
-                          p("The visualizations from this project are based off of data from 
+                          p("The first few visualizations from this project are based off of data from 
                           fbi.gov and Census.gov. There will be additional data from local 
                           governments to analyze specific changings in gun violence after 
                           changes are implemented (community action, laws, etc.). More specific 
-                          details about the sources can be found under the Methods tab."),
+                          details about the sources will be mentioned in explinations and they 
+                          can all be found under the Methods tab."),
                           h1("About Me"),
                           p("My name is Yao Yu and I’m currently an undergraduate at Harvard 
-                          studying Data Science."),
+                          studying Government with a specialization in Data Science."),
                           p("Reach me at ",
                             a("yaodongyu@college.harvard.edu",
                               href = "yaodongyu@college.harvard.edu",),
-                            "or LinkedIn ",
-                            a("here",
+                            "or ",
+                            a("LinkedIn",
                               href = "https://www.linkedin.com/in/yaodong-yu"))),
-                 tabPanel("Models",
-                          h2("Violent Crimes"),
-                          plotlyOutput("violence_Plotly"),
+                          column(2,
+                                 imageOutput("SF", height = "100%"),
+                                 imageOutput("OK", height = "100%"))),
+                 tabPanel("Violent Crime in Bay Area",
+                          h1("Violent Crimes"),
+                          fixedRow(
+                              column(4,
+                                     p("In this graph,
+                            I first look at violent crimes from 2011 to 2017. But, then I
+                            realized that Chicago's large crime rate made it difficult to
+                            see the other trends.")),
+                              column(5, 
+                                     plotlyOutput("violence_Plotly", height = "100%"))
+                          ),
                           br(),
+                          fixedRow(
+                              column(4,
+                                     p("To see the trends more clearly, 
+                                       I calculated the violent crime rates per capita.")),
+                              column(5, 
+                                     plotlyOutput("violence_capita_Plotly", height = "100%")))
+                          ),
+                 tabPanel("Imprisonment and Gun Control Laws",
+                          h1("Violent Crimes and Imprisonment"),
+                          fixedRow(
+                              column(4,
+                                     p("Reading other reports on the low gun violence rates in
+                            California, there was a suggestion that this decrease related to
+                            a decrease in prison sentencing. While it was difficult to find
+                            sentencing rates specifically in San Francisco and Oakland, the
+                            overall imprisonment rates in California were available through
+                            the ",
+                                       a("California Sentencing Institute", 
+                                         href = "http://casi.cjcj.org/about.html#download"),
+                                       ". What I found was a slight negative trend from 2011 to 2016,
+                            with the imprisonment rate following closely well to the Oakland
+                            gun violence rate. One problem with the imprisonment data is that
+                            most of San Francisco's imprisonment rates are not included because
+                            the California Sentencing Institute was unable to get the data from
+                            San Francisco.")),
+                              column(5, 
+                                     plotlyOutput("imprisonment_Plotly", height = "100%"))
+                          ),
                           br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          plotlyOutput("violence_capita_Plotly"),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          h2("Violent Crimes and California Imprisonment"),
-                          plotlyOutput("imprisonment_Plotly"),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          h2("Regression"),
-                          plotlyOutput("laws_Plotly"),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          br(),
-                          h2("Gun Violence Datapoints"),
-                          fillRow(
-                          imageOutput("SF"),
-                          imageOutput("OK"))),
+                          h1("Regression"),
+                          fixedRow(
+                              column(4,
+                                     p("The regression graphic shows the regression of three sets of data: the violent crime
+                            data from San Francisco, the violent crime data from Oakland, and the number of gun
+                            control laws in California. The violent crime data is the same that is shown in the
+                            first grpahic and the data on gun control laws is from ",
+                                       a("State Firearm Laws",
+                                         href = "http://www.statefirearmlaws.org/resources"),
+                                       ". The regressions show that over the years of 2011 to 2017, the
+                            number of violent crimes in San Francisco has actually had a slight increase,
+                            the number of violent crimes in Oakland had a slight decrease, and the number
+                            of gun control laws in California steadily rose. However, the violent crime
+                            rates of both San Francisco and Oakland both started decreasing from 2013
+                            on and from 2012 to 2013, there was a slightly higher number of gun control
+                            laws passed, from 95 to 99. This suggests that one of those 4 new pieces of
+                            legislation might possibly have something to do with the decrease in gun
+                            violence in San Francisco and Oakland while it increased in many other US
+                            cities (as seen in the first two graphics).")),
+                              column(5, 
+                                     plotlyOutput("laws_Plotly", height = "100%")))
+                          ),
                  tabPanel("Methods",
                           h1("Modeling"),
                           p("For my graphics, I chose to include three types: one showing the
@@ -124,7 +152,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             California; one showing all the datapoints of gun violence
                             in both cities; and one showing the Regression of violent crimes
                             and gun control laws."),
-                          h2("Violent Crimes"),
+                          h1("Violent Crimes"),
                           p("The violent crime graphics used data from the ",
                             a("Data Commons Graph", 
                               href = "https://browser.datacommons.org/gni"),                          
@@ -134,7 +162,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             realized that Chicago's large crime rate made it difficult to
                             see the other trends. So, I calculated the violent crime rates
                             per capita to make these trends more visible."),
-                          h2("Violent Crimes and California Imprisonment"),
+                          h1("Violent Crimes and California Imprisonment"),
                           p("Reading other reports on the low gun violence rates in
                             California, there was a suggestion that this decrease related to
                             a decrease in prison sentencing. While it was difficult to find
@@ -149,7 +177,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             most of San Francisco's imprisonment rates are not included because
                             the California Sentencing Institute was unable to get the data from
                             San Francisco."),
-                          h2("Gun Violence Datapoints"),
+                          h1("Gun Violence Datapoints"),
                           p("The last type of graph shows the datapoints of each victim
                             to gun violence in San Francisco and Oakland. First, I got the maps
                             from ",
@@ -173,7 +201,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             ", which once again used Google map's api. I chose not to use the 
                             San Francisco data from The Trace because it was extremely difficult to get 
                             the coordinates from the San Francisco dataset."),
-                          h2("Regression"),
+                          h1("Regression"),
                           p("The regression graphic shows the regression of three sets of data: the violent crime
                             data from San Francisco, the violent crime data from Oakland, and the number of gun
                             control laws in California. The violent crime data is the same that is shown in the
@@ -192,8 +220,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             cities (as seen in the first two graphics)."
                             )),
                  tabPanel("Analysis",
-                          h1("Conclusions"),
-                          h2("Thought Process"),
+                          h1("Thought Process"),
                           p("At the start of the whole project, I wanted to start by finding data to
                             visualize and confirm that gun violence in San Francisco and Oakland. The
                             closest data I could find at first was violent crime data, which I showed
@@ -226,7 +253,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                           two graphs) I found that the first three laws were also shared in states with increasing
                           gun violence and the only one that only California had was removing guns from people with 
                           a domestic violence-related restraining order - identified as dvroremoval in the dataset."),
-                          h2("dvroremoval"),
+                          h1("dvroremoval"),
                           p("The first thing I did after realizing that this law was not as common in other states,
                             I cleaned the data to create a graphic that would show which states did have this same law.
                             The resulting graphic can be seen below. Massachusetts seemed to have adopted this piece of
@@ -237,7 +264,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                             is limited data on gun violence and I suggest further research into gun violence there. For
                             New Jersey, the law is too new which leads to limited data. It would wise to keep track of
                             gun violence rates in cities like Newark, New Jersey in the next few years."),
-                          h2("Conclusion"),
+                          h1("Conclusion"),
                           p("While my findings may be inconclusive, there is simply not enough data to determine if
                             dvroremoval laws were the leading cause of San Francisco's and Oakland's decrease in gun
                             violence from 2013 to 2017. Each of these four implementations of dvroremoval might also
@@ -251,7 +278,7 @@ ui <- navbarPage("Gun Violence Decrease in San Francisco and Oakland",
                               comparing how different states have implemented and are enforcing this piece of
                               legislation. Contacting someone or an organization with more law background would be
                               especially helpful in comparing these different implementations."),
-                          plotlyOutput("laws_analysis_Plotly")
+                          plotlyOutput("laws_analysis_Plotly", height = "100%")
 ))
 
 # The code for this server was found here:
@@ -268,7 +295,7 @@ server <- function(input, output, session) {
             hoverinfo = "text",
             type = 'scatter',
             mode = 'lines',
-            width = 1000, 
+            width = 950, 
             height = 500
         ) %>% 
             layout(
@@ -298,7 +325,7 @@ server <- function(input, output, session) {
             hoverinfo = "text",
             type = 'scatter',
             mode = 'lines',
-            width = 1000, 
+            width = 950, 
             height = 500
         ) %>% 
             layout(
@@ -327,11 +354,11 @@ server <- function(input, output, session) {
             hoverinfo = "text",
             type = 'scatter',
             mode = 'line',
-            width = 1000, 
+            width = 950, 
             height = 500
         ) %>% 
             layout(
-                title = 'Violent Crimes vs. California Imprisonment',
+                title = 'Violent Crimes and California Imprisonment vs. Year',
                 xaxis = list(
                     title = "Year",
                     zeroline = F
@@ -347,7 +374,7 @@ server <- function(input, output, session) {
             )
     )
     output$laws_Plotly <- renderPlotly(
-        laws_graphic <- plot_ly(data = laws, x = ~year, width = 1000, height = 500) %>%
+        laws_graphic <- plot_ly(data = laws, x = ~year, width = 950, height = 500) %>%
             add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
             add_lines(x = ~year, y = fitted(fit_SF)) %>%
             add_markers(y = ~oakland_violent, name = "Oakland", visible = F) %>%
@@ -397,7 +424,7 @@ server <- function(input, output, session) {
                 labs(title = "States that have Adopted dvroremoval with Year",
                      x = "Year",
                      fill = "States"),
-                width = 1000, 
+                width = 950, 
                 height = 500
                 
         )

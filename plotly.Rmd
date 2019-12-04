@@ -58,7 +58,7 @@ saveRDS(object = graphic_capita, file = "RDS/graphic_violence_capita.RDS")
 # Tutorial can be found on the documentation page:
 # https://plot.ly/r/cumulative-animations/
 
-plot_ly(
+p <- plot_ly(
     data = graphic_capita,
     x = ~year, 
     y = ~deaths,
