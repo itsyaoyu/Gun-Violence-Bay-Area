@@ -173,12 +173,36 @@ ui <- navbarPage(theme = shinytheme("united"),
                           ),
                  tabPanel("Methods",
                           h1("Modeling"),
-                          p("For my graphics, I chose to include three types: one showing the
+                          p("For my graphics, I chose to include four types: one showing the
                             decrease in violent crimes in San Francisco and Oakland, California;
                             one showing the trend between gun violence and imprisonment in
                             California; one showing all the datapoints of gun violence
                             in both cities; and one showing the Regression of violent crimes
                             and gun control laws."),
+                          h1("Gun Violence Datapoints"),
+                          p("The graphs on the front page show the datapoints of each victim
+                            to gun violence in San Francisco and Oakland. First, I got the maps
+                            from ",
+                            a("Google Map's API",
+                              href = "https://cloud.google.com/maps-platform/"),
+                            ". The datapoints from San Francisco was pulled from",
+                            a("a crime dataset",
+                              href = "https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-Historical-2003/tmnf-yvry"),
+                            "with over 2 million rows of crime in San Francisco from 2003 to 2018. 
+                            I chose to pull out Aggravated Assault with a Gun data because there was
+                            no category just for violent crime or gun violence. The Oakland gun violence
+                            data came from",
+                            a("The Trace",
+                              href = "https://www.thetrace.org/violent-crime-data/"),
+                            ", an organization dedicated to bring awareness to
+                            gun violence. This dataset did have gun violence datapoints, which I
+                            used in my visualization. I was able to gather the coordinates from street
+                            addresses after using a modified script I found",
+                            a("here",
+                              href = "http://www.storybench.org/geocode-csv-addresses-r/"),
+                            ", which once again used Google map's api. I chose not to use the 
+                            San Francisco data from The Trace because it was extremely difficult to get 
+                            the coordinates from the San Francisco dataset."),
                           h1("Violent Crimes"),
                           p("The violent crime graphics used data from the ",
                             a("Data Commons Graph", 
@@ -204,30 +228,6 @@ ui <- navbarPage(theme = shinytheme("united"),
                             most of San Francisco's imprisonment rates are not included because
                             the California Sentencing Institute was unable to get the data from
                             San Francisco."),
-                          h1("Gun Violence Datapoints"),
-                          p("The last type of graph shows the datapoints of each victim
-                            to gun violence in San Francisco and Oakland. First, I got the maps
-                            from ",
-                            a("Google Map's API",
-                            href = "https://cloud.google.com/maps-platform/"),
-                            ". The datapoints from San Francisco was pulled from",
-                            a("a crime dataset",
-                              href = "https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-Historical-2003/tmnf-yvry"),
-                            "with over 2 million rows of crime in San Francisco from 2003 to 2018. 
-                            I chose to pull out Aggravated Assault with a Gun data because there was
-                            no category just for violent crime or gun violence. The Oakland gun violence
-                            data came from",
-                            a("The Trace",
-                              href = "https://www.thetrace.org/violent-crime-data/"),
-                            ", an organization dedicated to bring awareness to
-                            gun violence. This dataset did have gun violence datapoints, which I
-                            used in my visualization. I was able to gather the coordinates from street
-                            addresses after using a modified script I found",
-                            a("here",
-                              href = "http://www.storybench.org/geocode-csv-addresses-r/"),
-                            ", which once again used Google map's api. I chose not to use the 
-                            San Francisco data from The Trace because it was extremely difficult to get 
-                            the coordinates from the San Francisco dataset."),
                           h1("Regression"),
                           p("The regression graphic shows the regression of three sets of data: the violent crime
                             data from San Francisco, the violent crime data from Oakland, and the number of gun
