@@ -8,6 +8,7 @@ Repo Guide
 ------
 + /Gun_Violence_Bay_Area : Shiny App  
 + .gitignore 
++ Markdown_Report.Rmd : A Markdown version of my project
 + Prison_data.Rmd : code used to create visualization of imprisonment data
 + README.md  
 + about.Rmd : initial draft of the about page
