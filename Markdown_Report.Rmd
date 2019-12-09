@@ -37,6 +37,9 @@ Each dot represents at least one victim of gun violence from 2011 to 2017 in the
 ## Violent Crimes
 
 ```{r}
+
+# Reading in all the data that I will need for the visualizations
+
 graphic_violence <- readRDS("Gun_Violence_Bay_Area/graphic_violence.RDS")
 
 violence_capita <- readRDS("Gun_Violence_Bay_Area/graphic_violence_capita.RDS")
@@ -53,6 +56,9 @@ fit_Law <- lm(lawtotal ~ year, data = laws)
 ```
 
 ```{r}
+
+# Graphic of violent crimes in select cities per year
+
 plot_ly(
             data = graphic_violence,
             x = ~year, 
@@ -87,6 +93,9 @@ plot_ly(
 In this graph, I started my research searching for statistics on the number of gun violence crimes in different cities across America. This data was much more difficult to find than I originally thought because I learned that different police departments across the country all code incident reports differently. Some, like San Francisco's PD, had specific coding down to the level of homicides with different types of weapons. Other cities, like Oakland, coded reports much more vaguely with just homicides or gun violence. Instead, I resorted to looking at violent crime data from the FBI because all cities were required to report with similar coding. I found the [Data Commons Graph](https://browser.datacommons.org/gni) tool useful for this because it could combine the FBI data from many different cities into one for graphing. I chose the cities of Baltimore, Chicago, and St. Louis to compare because they are also other large cities in the US that are being affected by gun violence. One problem with this data was that it does not go as far back in years as I would have liked. However, 2011 to 2017 is still a good representation to look at the decrease in gun violence in San Francisco and Oakland that this project is focused on. 
 
 ```{r}
+
+# Graphic of violent crimes in selected cities per year per capita
+
 plot_ly(
             data = violence_capita,
             x = ~year, 
@@ -122,6 +131,9 @@ After looking at the graph created from the gun violence data, I realized that C
 ## Violent Crimes and California Imprisonment
 
 ```{r}
+
+# Graphic of imprisonment data
+
 plot_ly(
             data = imprisonment_data,
             x = ~year, 
@@ -156,6 +168,9 @@ Reading other reports on the low gun violence rates in California, there was a s
 ## Regression
 
 ```{r}
+
+# Regression graphic
+
 plot_ly(data = laws, x = ~year, width = 1000, height = 500) %>%
             add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
             add_lines(x = ~year, y = fitted(fit_SF)) %>%
@@ -209,6 +224,9 @@ At the start of the whole project, I wanted to start by finding data to visualiz
 The first thing I did after realizing that this law was not as common in other states, I cleaned the data to create a graphic that would show which states did have this same law. The resulting graphic can be seen below. Massachusetts seemed to have adopted this piece of law back in 1994, long before California in 2013, Minnesota in 2014, and New Jersey in 2017. Looking at gun violence data in these other states, [Erin Guetzloe's](https://eringuetzloe.shinyapps.io/gun-violence-visualizations/) study on Boston, Massachusetts saw an increase in gun violence. However, they adopted this law much earlier in the 90s, so it may be an outdated law or other factors are causing an increase. In Minneapolis, Minnesota there is limited data on gun violence and I suggest further research into gun violence there. For New Jersey, the law is too new which leads to limited data. It would wise to keep track of gun violence rates in cities like Newark, New Jersey in the next few years.
 
 ```{r}
+
+# Graphic of dvroremoval law in cities with year
+
 ggplotly(laws_analysis %>%
                 ggplot(aes(x = year, fill = state)) +
                 geom_bar() +
