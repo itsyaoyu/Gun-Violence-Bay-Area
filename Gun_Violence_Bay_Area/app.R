@@ -82,7 +82,7 @@ ui <- navbarPage(theme = shinytheme("united"),
                           studying Government with a specialization in Data Science."),
                           p("You can reach me at ",
                             a("yaodongyu@college.harvard.edu",
-                              href = "yaodongyu@college.harvard.edu",),
+                              href = "mailto: yaodongyu@college.harvard.edu",),
                             "or ",
                             a("LinkedIn",
                               href = "https://www.linkedin.com/in/yaodong-yu"))),
@@ -313,8 +313,10 @@ ui <- navbarPage(theme = shinytheme("united"),
                               comparing how different states have implemented and are enforcing this piece of
                               legislation. Contacting someone or an organization with more law background would be
                               especially helpful in comparing these different implementations."),
-                          plotlyOutput("laws_analysis_Plotly", height = "100%")
-))
+                          plotlyOutput("laws_analysis_Plotly", height = "100%")),
+                tabPanel("Video",
+                         HTML('<iframe width="1200" height="630" src="https://www.youtube.com/embed/KHuqCqWOlps" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'))
+)
 
 # The code for this server was found here:
 # https://stackoverflow.com/questions/35421923/how-to-create-and-display-an-animated-gif-in-shiny

@@ -13,8 +13,6 @@ library(plotly)
 
 # Abstract
 
-Gun violence and mass shootings are on the rise in America. In 2017, an active shooter killed 59 people and injured over 500 by shooting into a crowd of concertgoers from the Mandalay Bay Resort in Las Vegas.[^1] Within a year later, the Stoneman Douglas High School shooting in Parkland, Florida killed 17 students and led to the largest student-led call for gun control: March for Our Lives.[^2] Since then, gun control activists have been fighting heavily against the NRA and 2nd amendment supporters for more gun control laws in America. Being a student who grew up with school shootings constantly being in the headlines, I immediately took on this project after a report by The Guardian claimed that gun violence in the Bay Area had been decreasing the past few years to search for answers.[^3]
-
 The goal of this project is to find what caused gun violence to decrease in the Bay Area while it was increasing in many other US cities for the past decade. Other analysts have suggested that this decline is related to criminal justice reforms, tough gun laws, and investment in local communities.[^3] We will be comparing how different cities in the United States interact with some of these factors using data from individual cities and comparing the differences. If any factors are unique to San Francisco and Oakland, then we will look deeper into those factors to see if they might be the cause of the significant decrease in gun violence in the Bay Area.
 
 \newpage
