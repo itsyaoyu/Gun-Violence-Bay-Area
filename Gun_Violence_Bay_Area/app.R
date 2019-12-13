@@ -3,6 +3,8 @@ library(plotly)
 library(tidyverse)
 library(shinythemes)
 
+# Reads in data
+
 graphic_violence <- readRDS("graphic_violence.RDS")
 
 violence_capita <- readRDS("graphic_violence_capita.RDS")
@@ -72,6 +74,9 @@ ui <- navbarPage(theme = shinytheme("united"),
                           changes are implemented (community action, laws, etc.). More specific 
                           details about the sources will be mentioned in explinations and they 
                           can all be found under the Methods tab."),
+                          p("You can find the code for this project on my ",
+                            a("GitHub",
+                              href = "https://github.com/itsyaoyu/Gun-Violence-Bay-Area",)),
                           h1("About Me"),
                           p("My name is Yao Yu and I’m currently an undergraduate at Harvard 
                           studying Government with a specialization in Data Science."),
@@ -314,6 +319,9 @@ ui <- navbarPage(theme = shinytheme("united"),
 # The code for this server was found here:
 # https://stackoverflow.com/questions/35421923/how-to-create-and-display-an-animated-gif-in-shiny
 server <- function(input, output, session) {
+    
+    # Renders violence plot
+    
     output$violence_Plotly <- renderPlotly({
         violence <- plot_ly(
             data = graphic_violence,
@@ -344,6 +352,9 @@ server <- function(input, output, session) {
                                    font=list(size=15, color="black"))
             )
     })
+    
+    # Renders violence per capita plot
+    
     output$violence_capita_Plotly <- renderPlotly({
         violence_capita <- plot_ly(
             data = violence_capita,
@@ -374,6 +385,9 @@ server <- function(input, output, session) {
                                    font=list(size=15, color="black"))
             )
     })
+    
+    # Renders imprisonment plot
+    
     output$imprisonment_Plotly <- renderPlotly(
         imprisonment_graphic <- plot_ly(
             data = imprisonment_data,
@@ -403,6 +417,9 @@ server <- function(input, output, session) {
                                    font=list(size=12, color="black"))
             )
     )
+    
+    # Renders laws dropdown plot
+    
     output$laws_Plotly <- renderPlotly(
         laws_graphic <- plot_ly(data = laws, x = ~year, width = 850, height = 500) %>%
             add_markers(y = ~san_francisco_violent, name = "San Francisco") %>%
@@ -442,6 +459,9 @@ server <- function(input, output, session) {
                                    xanchor='right', yanchor='auto', xshift=0, yshift=0,
                                    font=list(size=12, color="black"))
             ))
+    
+    # Plots dvroremoval plot in conclusion
+    
     output$laws_analysis_Plotly <- renderPlotly(
         ggplotly(laws_analysis %>%
                 ggplot(aes(x = year, fill = state)) +
@@ -459,6 +479,9 @@ server <- function(input, output, session) {
                 
         )
     )
+    
+    # Plots gif of San Francisco crimes
+    
     output$SF <- renderImage({
         # Return a list containing the filename
         list(src = "AAGun_SF.gif",
@@ -467,6 +490,9 @@ server <- function(input, output, session) {
              # height = 300,
              # alt = "This is alternate text"
         )}, deleteFile = FALSE)
+    
+    # Plots gif of Oakland crimes
+    
     output$OK <- renderImage({
         # Return a list containing the filename
         list(src = "trace_OK.gif",

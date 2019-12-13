@@ -1,0 +1,161 @@
+---
+title: "Why is Gun Violence Decreasing in the Bay Area?"
+subtitle: "A Specific look into San Francisco and Oakland"
+date: "12/10/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(plotly)
+```
+
+# Abstract
+
+Gun violence and mass shootings are on the rise in America. In 2017, an active shooter killed 59 people and injured over 500 by shooting into a crowd of concertgoers from the Mandalay Bay Resort in Las Vegas.[^1] Within a year later, the Stoneman Douglas High School shooting in Parkland, Florida killed 17 students and led to the largest student-led call for gun control: March for Our Lives.[^2] Since then, gun control activists have been fighting heavily against the NRA and 2nd amendment supporters for more gun control laws in America. Being a student who grew up with school shootings constantly being in the headlines, I immediately took on this project after a report by The Guardian claimed that gun violence in the Bay Area had been decreasing the past few years to search for answers.[^3]
+
+The goal of this project is to find what caused gun violence to decrease in the Bay Area while it was increasing in many other US cities for the past decade. Other analysts have suggested that this decline is related to criminal justice reforms, tough gun laws, and investment in local communities.[^3] We will be comparing how different cities in the United States interact with some of these factors using data from individual cities and comparing the differences. If any factors are unique to San Francisco and Oakland, then we will look deeper into those factors to see if they might be the cause of the significant decrease in gun violence in the Bay Area.
+
+\newpage
+    
+# Violent Crimes
+
+```{r}
+
+# Reading in all the data that I will need for the visualizations
+
+violence_capita <- readRDS("Gun_Violence_Bay_Area/graphic_violence_capita.RDS")
+
+laws <- readRDS("Gun_Violence_Bay_Area/laws.RDS")
+
+laws_analysis <- readRDS("Gun_Violence_Bay_Area/laws_analysis.RDS")
+
+fit_Law <- lm(lawtotal ~ year, data = laws)
+```
+
+```{r, include=FALSE}
+
+# Graphic of violent crimes in selected cities per year per capita
+
+p <- plot_ly(
+            data = violence_capita,
+            x = ~year, 
+            y = ~deaths,
+            color = ~cities,
+            frame = ~frame,
+            text = ~cities, 
+            hoverinfo = "text",
+            type = 'scatter',
+            mode = 'lines',
+            width = 1000, 
+            height = 500
+        ) %>% 
+            layout(
+                title = 'Number of Violent Crimes in Cities Per Year Per Capita',
+                xaxis = list(
+                    title = "Year",
+                    zeroline = F
+                ),
+                yaxis = list(
+                    title = "Violent Crimes Per Capita",
+                    zeroline = F
+                ),
+                annotations = list(x = 1, y = -0.12, text = "Source: Census.gov, fbi.gov", 
+                                   showarrow = F, xref='paper', yref='paper', 
+                                   xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                   font=list(size=15, color="black"))
+            )
+```
+
+![Violent Crimes Graphic](./graphics/violent-crime.png)
+
+The project started with finding statistics on the number of gun violence crimes in different cities across America. This data was difficult to find because different police departments across the country code incident reports differently. Some, like San Francisco's Police Department, had specific coding down to the level of homicides with different types of weapons. Other cities, like Oakland, coded reports much more vaguely with just homicides or gun violence. As a result, the final data came from the Data Commons Graph tool because it combined FBI violent crime data from many U.S. cities into one with similar coding.[^4] To look at violent crime rates across the country, the cities of Baltimore, Chicago, and St. Louis were randomly selected because they were also being affected by gun violence. The problem with this data is that its time frame is limited and it is not specifically limited to gun violence. However, 2011 to 2017 is still a good representation to look at the period of decrease and gun violence is a type of violent crime. The violent crime rate is graphed per capita because Chicago's high crime rate made it difficult to see the trends of all the cities. Looking at the graph, you can see the trend that San Francisco and Oakland had a decrease in violent crimes from 2013 to 2017 while the other cities had an increase in violent crimes.
+
+# Prison Data
+
+While this project intended to look at prison data from California, much of the data was not publically accessible online and a dead-end was reached. Instead, a deeper focus was put onto gun control laws.
+
+\newpage
+
+# Gun Control Laws
+
+```{r, include=FALSE}
+
+# Regression graphic
+
+p <- plot_ly(data = laws, x = ~year) %>%
+            add_markers(y = ~lawtotal, name = "Gun Control Laws", visible = T) %>%
+            add_lines(x = ~year, y = fitted(fit_Law), visible = T) %>%
+            layout(
+                showlegend = FALSE,
+                title = "Number of California's Gun Control Laws per Year",
+                xaxis = list(
+                    title = "Year",
+                    zeroline = F
+                ),
+                yaxis = list(
+                    title = "Number of California's Gun Control Laws",
+                    zeroline = F
+                ),
+                annotations = list(x = 1, y = -0.08, text = "Source: State Firearm Laws", 
+                                   showarrow = F, xref='paper', yref='paper', 
+                                   xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                   font=list(size=12, color="black"))
+            )
+```
+
+![California's Gun Control Laws](./graphics/gun-laws.png)
+
+Looking at gun control laws in California from the State Firearm Laws dataset, there appears to be a steady increase in new gun control laws every year from 2011 to 2016.[^5] However, we can see that in 2013, there was a slighty higher number of gun control laws passed than the other years. This was also the time where gun violence rates in San Francisco and Oakland began to drop. Looking at these four new laws in 2013, they were coded in the dataset as microstamp, capliability, capaccess, and dvroremoval. Microstamp is related to reducing gun trafficking by requiring every gun's serial number to be put on each cartridge and was first signed into law in 2007, but got caught up in court and was passed in 2013.[^6] Capliability and capaccess are laws which aim at reducing child access to guns and have been implemented in many other U.S. states.[^7] The last code, dvroremoval, is the most interesting one because it was unique to only two states in 2013 and only four states when this paper was written.[^8]
+
+# dvroremoval
+
+Dvroremoval is a law that requires removing guns from people with a domestic violence-related restraining order. Massachusetts was the earliest state to implement some version of this law in 1994 and the other three states (California, Minnesota, and New Jersey) all implemented a version within the past decade.[^8] While this law was not and still is not implemented in any of the states of the cities in Figure 1, the four states that have implemented this law currently do not all see an equal benefit in reduced gun violence rates as the Bay Area. Moreover, not all cities in California share this benefit either because the overall homicide rate in California has been on the rise.[^9]
+
+\newpage
+
+# Conclusion
+
+```{r, include=FALSE}
+
+# Graphic of dvroremoval law in cities with year
+
+p <- ggplotly(laws_analysis %>%
+                ggplot(aes(x = year, fill = state)) +
+                geom_bar() +
+                theme_classic() +
+                theme(axis.title.y = element_blank(),
+                      axis.text.y = element_blank(),
+                      axis.ticks.y = element_blank(),
+                      axis.line.y = element_blank()) +
+                labs(title = "States that have Adopted dvroremoval with Year",
+                     x = "Year",
+                     fill = "States")
+                
+        )
+```
+
+![Dvroremoval Law](./graphics/dvroremoval.png)
+
+Overall, the finding of this project is inconclusive because there is simply not enough data to determine if the dvroremoval law was the leading cause of San Francisco's and Oakland's decrease in gun violence from 2013 to 2017. Each of the four implementations of dvroremoval between different states also vary between each other, leading some to be more effective than others. It does appear that California's implementation is much more specific than others as seen in an article by Giffords Law Center to Prevent Gun Violence.[^10] That being said, it would be interesting to keep track of dvroremoval in the next few years to see if it will become more effective as the law becomes more fully integrated. For further studies, it would also be interesting to compare the different degrees of implementations of dvroremoval to see if a more strict version of the law has a different effect than a loosely regulated version.
+
+[^1]: [The New York Times coverage on the 2017 Las Vegas shooting](https://www.nytimes.com/2017/10/02/us/las-vegas-shooting-live-updates.html)
+
+[^2]: [March for Our Lives website](https://marchforourlives.com/mission-story/)
+
+[^3]: [The Guardian reports on the decrease in gun violence in the Bay Area](https://www.theguardian.com/us-news/ng-interactive/2019/jun/03/gun-violence-bay-area-drop-30-percent-why-investigation)
+
+[^4]: [Data Commons Graph](https://browser.datacommons.org/gni)
+
+[^5]: [State Firearm Laws](http://www.statefirearmlaws.org/resources)
+
+[^6]: [Article on the microstampping law being approved by the courts](https://www.sfgate.com/news/article/Gun-control-Cartridge-ID-law-to-take-effect-4527165.php#photo-4645538)
+
+[^7]: [State Firearm Laws data codebook](https://www.statefirearmlaws.org/states/CA)
+
+[^8]: See figure 3.
+
+[^9]: [Article on California's increasing homicide rate](https://losangeles.cbslocal.com/2017/10/07/californias-gun-related-homicide-rate-up/)
+
+[^10]: [Giffords Law Center article on domestic violence firearm laws](https://lawcenter.giffords.org/gun-laws/policy-areas/who-can-have-a-gun/domestic-violence-firearms/)
